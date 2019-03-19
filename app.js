@@ -39,7 +39,6 @@ function select_random_image() {
   var random_image_index = Math.floor(Math.random() * all_product_images.length);
   return random_image_index;
 }
-// all_product_images[random_image_index].times_shown_on_page++;
 
 function new_image_set() {
   var new_images_to_render_to_page = [];
@@ -71,6 +70,8 @@ function render_new_images() {
     var new_image = new_images_to_render_to_page[j];
     products_on_page[j] = all_product_images[new_image];
 
+    all_product_images[new_image].times_shown_on_page++;
+
     //target the specific image element
     var image_element = how_many_products[j].childNodes[1];
     //update the 'src' and 'name' attributes with the new information
@@ -81,6 +82,23 @@ function render_new_images() {
   //update the products_on_page array with the newly rendered products' indexes
   products_on_page = new_images_to_render_to_page;
 }
+
+function render_totals() {
+  var get_parent_element = document.getElementById('results');
+  for (var k = 0; k < all_product_images.length; k++) {
+    var name = all_product_images[k].product_name;
+    var clicks = all_product_images[k].clicks;
+    var times_on_page = all_product_images[k].times_shown_on_page;
+
+    var new_list_item = document.createElement('li');
+    new_list_item.textContent = `${name}:  shown ${times_on_page} times, clicked ${clicks} times.`;
+    get_parent_element.appendChild(new_list_item);
+  }
+}
+
+//-----------------------------
+// Event Functions
+//-----------------------------
 
 function image_was_clicked(event) {
 
@@ -99,6 +117,7 @@ function image_was_clicked(event) {
     }
   } else {
     product_choices.removeEventListener('click', image_was_clicked);
+    render_totals();
   }
 }
 
