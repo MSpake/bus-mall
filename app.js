@@ -48,13 +48,14 @@ function new_image_set() {
   for (var i = 0; i < how_many_products.length; i++) {
     var new_image = select_random_image();
     //prevent duplicate images by checking if the image's index has already been generated and generating a new index until they are all unique
-    while (new_images_to_render_to_page.includes(new_image)) {
+    while (new_images_to_render_to_page.includes(new_image) || products_on_page.includes(new_image)) {
       new_image = select_random_image();
     }
     //push to the new_images_to_render array
     new_images_to_render_to_page.push(new_image);
 
   }
+  console.log(new_images_to_render_to_page);
   return new_images_to_render_to_page;
 
 }
@@ -73,10 +74,14 @@ function render_new_images() {
     all_product_images[new_image].times_shown_on_page++;
 
     //target the specific image element
-    var image_element = how_many_products[j].childNodes[1];
     //update the 'src' and 'name' attributes with the new information
+    var image_element = how_many_products[j].childNodes[1];
     image_element.src = products_on_page[j].url;
     image_element.name = products_on_page[j].element_name;
+
+    //target the image caption and update the text content
+    var caption = how_many_products[j].childNodes[3];
+    caption.textContent = products_on_page[j].product_name;
   }
 
   //update the products_on_page array with the newly rendered products' indexes
@@ -85,15 +90,21 @@ function render_new_images() {
 
 function render_totals() {
   var get_parent_element = document.getElementById('results');
-  for (var k = 0; k < all_product_images.length; k++) {
-    var name = all_product_images[k].product_name;
-    var clicks = all_product_images[k].clicks;
-    var times_on_page = all_product_images[k].times_shown_on_page;
 
-    var new_list_item = document.createElement('li');
-    new_list_item.textContent = `${name}:  shown ${times_on_page} times, clicked ${clicks} times.`;
-    get_parent_element.appendChild(new_list_item);
+  for (var k = 0; k < all_product_images.length; k++) {
+    if (all_product_images[k].times_shown_on_page > 0) {
+      var name = all_product_images[k].product_name;
+      var clicks = all_product_images[k].clicks;
+
+      var new_list_item = document.createElement('li');
+      new_list_item.textContent = `${clicks} votes for the ${name}`;
+      get_parent_element.appendChild(new_list_item);
+    }
   }
+
+  var total_clicks_list_item = document.createElement('li');
+  total_clicks_list_item.textContent = `Total votes: ${total_clicks}`;
+  get_parent_element.appendChild(total_clicks_list_item);
 }
 
 //-----------------------------
@@ -103,7 +114,7 @@ function render_totals() {
 function image_was_clicked(event) {
 
   //limit to 25 clicks
-  if (total_clicks < 5) {
+  if (total_clicks < 25) {
     var clicked;
     for (var k = 0; k < how_many_products.length; k++) {
       var possible_targeted_product = products_on_page[k];
@@ -157,5 +168,4 @@ render_new_images();
 
 //clicking
 var product_choices = document.getElementById('product_choices');
-
 product_choices.addEventListener('click', image_was_clicked);
