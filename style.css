@@ -49,3 +49,8 @@ figcaption {
     font-size: 1.2em;
     font-weight: bold;
 }
+
+#click_data_chart_div {
+    width: 50%;
+    margin: auto;
+}
