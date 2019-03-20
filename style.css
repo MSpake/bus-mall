@@ -1,5 +1,6 @@
 * {
     text-align: center;
+    margin-bottom: 30px;
 }
 
 header,
@@ -50,7 +51,7 @@ figcaption {
     font-weight: bold;
 }
 
-#click_data_chart_div {
+.click_data_chart_div {
     width: 50%;
     margin: auto;
 }

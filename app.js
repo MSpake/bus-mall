@@ -5,6 +5,7 @@
 //-----------------------------
 
 var total_clicks = 0;
+var allowed_number_of_clicks = 12;
 var all_product_images = [];
 var products_on_page = [];
 
@@ -15,7 +16,10 @@ var products_on_page = [];
 var product_choices = document.getElementById('product_choices');
 var number_of_products_on_the_page = document.getElementsByClassName('product');
 var results_section = document.getElementById('results');
-var ctx = document.getElementById('click_data_chart').getContext('2d');
+var total_clicks_chart_element = document.getElementById('total_clicks_chart').getContext('2d');
+var user_click_percentages_chart_element = document.getElementById('user_click_percentages_chart').getContext('2d');
+var picked_when_on_page_chart_element = document.getElementById('percentage_picked_when_on_page_chart').getContext('2d');
+
 
 //-----------------------------
 // Constructors and Associated Methods
@@ -40,6 +44,7 @@ var Product_image = function(url, product_name) {
 //-----------------------------
 // Stand Alone Functions
 //-----------------------------
+
 
 //function to generate a random number
 //range set by length of all_product_images array
@@ -95,22 +100,41 @@ function render_new_images() {
   products_on_page = new_image_set_to_render;
 }
 
-function render_totals() {
+function calculate_total_clicks_based_percentages(user_clicks_array) {
+  for (var p in user_clicks_array) {
+    user_clicks_array[p] = Math.round((user_clicks_array[p] / total_clicks) * 100);
+  }
+  return user_clicks_array;
+}
 
-  for (var k = 0; k < all_product_images.length; k++) {
-    if (all_product_images[k].times_shown_on_page > 0) {
-      var name = all_product_images[k].product_name;
-      var clicks = all_product_images[k].clicks;
-
-      var new_list_item = document.createElement('li');
-      new_list_item.textContent = `${clicks} votes for the ${name}`;
-      results_section.appendChild(new_list_item);
-    }
+function calculate_array_based_percentages(user_clicks_array, divisor_array) {
+  for (var q in user_clicks_array) {
+    user_clicks_array[q] = Math.round((user_clicks_array[q] / divisor_array[q]) * 100);
   }
 
-  var total_clicks_list_item = document.createElement('li');
-  total_clicks_list_item.textContent = `Total votes: ${total_clicks}`;
-  results_section.appendChild(total_clicks_list_item);
+  return user_clicks_array;
+}
+
+function render_totals() {
+
+  // for (var k = 0; k < all_product_images.length; k++) {
+  //   if (all_product_images[k].times_shown_on_page > 0) {
+  //     var name = all_product_images[k].product_name;
+  //     var clicks = all_product_images[k].clicks;
+
+  //     var new_list_item = document.createElement('li');
+  //     new_list_item.textContent = `${clicks} votes for the ${name}`;
+  //     results_section.appendChild(new_list_item);
+  //   }
+  // }
+
+  // var total_clicks_list_item = document.createElement('li');
+  // total_clicks_list_item.textContent = `Total votes: ${total_clicks}`;
+  // results_section.appendChild(total_clicks_list_item);
+
+  render_total_clicks_chart();
+  render_user_clicks_percentages_chart();
+  render_when_on_page_percentages_chart();
 }
 
 //-----------------------------
@@ -119,8 +143,8 @@ function render_totals() {
 
 function image_was_clicked(event) {
 
-  //limit to 25 clicks
-  if (total_clicks < 12) {
+  //limit number of clicks
+  if (total_clicks < allowed_number_of_clicks) {
     var clicked;
     for (var k = 0; k < number_of_products_on_the_page.length; k++) {
       var possible_targeted_product = products_on_page[k];
@@ -136,7 +160,6 @@ function image_was_clicked(event) {
     product_choices.removeEventListener('click', image_was_clicked);
     //TODO: add a thank you instead of images
     render_totals();
-    render_clicks_chart();
   }
 }
 
@@ -177,7 +200,10 @@ render_new_images();
 //clicking
 product_choices.addEventListener('click', image_was_clicked);
 
-function render_clicks_chart() {
+
+
+
+function render_total_clicks_chart() {
   var product_names = [];
   var number_of_times_product_was_clicked = [];
 
@@ -187,7 +213,7 @@ function render_clicks_chart() {
     number_of_times_product_was_clicked.push(all_product_images[m].clicks);
   }
 
-  var gradient = ctx.createLinearGradient(0, 0, 0, 600);
+  var gradient = total_clicks_chart_element.createLinearGradient(0, 0, 0, 600);
   gradient.addColorStop(0.0, 'whitesmoke');
   gradient.addColorStop(0.5, 'lightgreen');
   gradient.addColorStop(1.0, 'darkgreen');
@@ -197,7 +223,7 @@ function render_clicks_chart() {
   //   all_as_gradient[n].push(gradient);
   // }
 
-  var clicks_chart = new Chart(ctx, {
+  var clicks_chart = new Chart(total_clicks_chart_element, {
     type: 'bar',
     data: {
       labels: product_names,
@@ -205,12 +231,6 @@ function render_clicks_chart() {
         label: '# of Votes',
         data: number_of_times_product_was_clicked,
         backgroundColor: [
-          // 'rgba(255, 99, 132, 0.2)',
-          // 'rgba(54, 162, 235, 0.2)',
-          // 'rgba(255, 206, 86, 0.2)',
-          // 'rgba(75, 192, 192, 0.2)',
-          // 'rgba(153, 102, 255, 0.2)',
-          // 'rgba(255, 159, 64, 0.2)'
           gradient,
           gradient,
           gradient,
@@ -238,6 +258,131 @@ function render_clicks_chart() {
       }]
     },
     options: {
+      title: {
+        display: true,
+        text: 'all clicks'
+      },
+      layout: {
+        padding: 20
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
+function render_user_clicks_percentages_chart() {
+  var product_names = [];
+  var number_of_times_product_was_clicked = [];
+
+  for (var o = 0; o < all_product_images.length; o++) {
+    if (all_product_images[o].clicks > 0) {
+      product_names.push(all_product_images[o].product_name);
+      number_of_times_product_was_clicked.push(all_product_images[o].clicks);
+    }
+  }
+
+  number_of_times_product_was_clicked = calculate_total_clicks_based_percentages(number_of_times_product_was_clicked);
+
+  var user_clicks_percentages = new Chart(user_click_percentages_chart_element, {
+    type: 'pie',
+    data: {
+      labels: product_names,
+      datasets: [{
+        label: '',
+        data: number_of_times_product_was_clicked,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Each item you clicked on accounts for what percentage of your total clicks'
+      },
+      layout: {
+        padding: 20
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
+function render_when_on_page_percentages_chart() {
+  var product_names = [];
+  var times_shown_on_page = [];
+  var number_of_times_product_was_clicked = [];
+
+  for (var q = 0; q < all_product_images.length; q++) {
+    if (all_product_images[q].times_shown_on_page > 0) {
+      product_names.push(all_product_images[q].product_name);
+      times_shown_on_page.push(all_product_images[q].times_shown_on_page);
+      number_of_times_product_was_clicked.push(all_product_images[q].clicks);
+    }
+  }
+
+  number_of_times_product_was_clicked = calculate_array_based_percentages(number_of_times_product_was_clicked, times_shown_on_page);
+
+  var user_clicks_percentages = new Chart(picked_when_on_page_chart_element, {
+    type: 'pie',
+    data: {
+      labels: product_names,
+      datasets: [{
+        label: '',
+        data: number_of_times_product_was_clicked,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'When an item was shown on the page, you clicked on it this % of the time'
+      },
+      layout: {
+        padding: 20
+      },
       scales: {
         yAxes: [{
           ticks: {
