@@ -1,52 +1,68 @@
-* {
-    text-align: center;
-}
-
-header,
-footer,
-section,
-ul {
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-Header {
-    font-size: 1.8em;
-    font-weight: bold;
-}
-
-p {
-    width: 70%;
-    margin: 20px auto;
-}
-
-section {
-    width: 100%;
-    margin: auto;
-}
-
-figure {
-    display: inline-block;
-    width: 20%;
-    margin: 30px 1%;
-}
-
-img {
-    width: 100%;
-}
-
-h2 {
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-figcaption {
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-.click_data_chart_div {
-    width: 70%;
-    margin: auto;
-}
+    @import url('https://fonts.googleapis.com/css?family=Fugaz+One');
+    * {
+        text-align: center;
+    }
+    
+    header {
+        background-image: url(./img/bus-2.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        height: 0;
+        padding: 5%;
+        width: 98%;
+        margin-bottom: 20px;
+    }
+    
+    h1 {
+        font-family: 'Fugaz One', cursive;
+        color: white;
+        font-size: 5vw;
+        font-weight: bold;
+        width: 40%;
+        margin: -30px auto 0 auto;
+        padding: 10px 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+    }
+    
+    section {
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+    
+    p {
+        width: 70%;
+        margin: 20px auto;
+    }
+    
+    section {
+        width: 100%;
+        margin: auto;
+    }
+    
+    figure {
+        display: inline-block;
+        width: 20%;
+        margin: 30px 1%;
+    }
+    
+    img {
+        width: 100%;
+    }
+    
+    h2 {
+        font-size: 1.4em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    figcaption {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    
+    .click_data_chart_div {
+        width: 70%;
+        margin: auto;
+    }
