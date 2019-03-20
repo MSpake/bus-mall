@@ -11,8 +11,15 @@
 </head>
 
 <body>
-    <header>Please click in which item you would be most likely to purchase:</header>
+    <header>
+        <h1><span>BusMall&#8482;</span></h1>
+    </header>
     <main>
+        <h2>BusMall Data Collection Survey</h2>
+        <p>Welcome to BusMall! The one and only in-transit catalogue for the Puget Sound regional transit system.</p>
+        <p>We're well on the way to making our catalogue the absolute best it can possibly be. All we need now is the input of riders like you! To participate in our data collection survey, just follow the instructions below. It's easy!</p>
+        <p>You'll be shown three images at a time. <br> Just click on whichever one you'd be most intersted in seeing as a part of the BusMall catalogue! </p>
+        <p> Thanks! <br>-The BusMall Team</p>
         <section id="product_choices">
             <figure id="left_product" class="product">
                 <img id="left_product_image" name="test1" src="./img/bag.jpg" alt="">
@@ -28,12 +35,18 @@
             </figure>
         </section>
         <section>
-            <h2>Items Shown on Page:</h2>
-            <ul id="results">
-            </ul>
+            <div class="click_data_chart_div">
+                <canvas id="total_clicks_chart" width="300" height="300"></canvas>
+            </div>
+            <div class="click_data_chart_div">
+                <canvas id="user_click_percentages_chart" width="300" height="300"></canvas>
+            </div>
+            <div class="click_data_chart_div">
+                <canvas id="percentage_picked_when_on_page_chart" width="300" height="300"></canvas>
+            </div>
         </section>
-        <footer>Footer?</footer>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
     <script src="app.js"></script>
 </body>
 
