@@ -17,7 +17,7 @@ var products_on_page = [];
 var product_choices = document.getElementById('product_choices');
 var number_of_products_on_the_page = document.getElementsByClassName('product');
 var total_clicks_chart_element = document.getElementById('total_clicks_chart').getContext('2d');
-// var picked_when_on_page_chart_element = document.getElementById('percentages_chart').getContext('2d');
+var picked_when_on_page_chart_element = document.getElementById('percentages_chart').getContext('2d');
 
 
 //-----------------------------
@@ -110,7 +110,7 @@ function calculate_array_based_percentages(data_array, divisor_array) {
 function render_totals() {
   product_choices.innerHTML = '';
   render_total_clicks_chart();
-  // render_percentages_chart();
+  render_percentages_chart();
 }
 
 //-----------------------------
@@ -123,14 +123,10 @@ function render_total_clicks_chart() {
   var number_of_times_the_product_was_shown = [];
 
   for (var m = 0; m < all_product_images.length; m++) {
-    // debugger;
     product_names.push(all_product_images[m].product_name);
     number_of_times_product_was_clicked.push(all_product_images[m].clicks);
     number_of_times_the_product_was_shown.push(all_product_images[m].times_shown_on_page);
-
   }
-
-  var percentages = calculate_array_based_percentages(number_of_times_product_was_clicked, number_of_times_the_product_was_shown);
 
   var green_gradient = total_clicks_chart_element.createLinearGradient(0, 0, 0, 600);
   green_gradient.addColorStop(0.0, 'whitesmoke');
@@ -226,117 +222,52 @@ function render_total_clicks_chart() {
   });
 }
 
-// function render_percentages_chart() {
-//   var product_names = [];
-//   var number_of_times_product_was_clicked = [];
-//   var number_of_times_the_product_was_shown = [];
+function render_percentages_chart() {
+  var product_names = [];
+  var number_of_times_product_was_clicked = [];
+  var number_of_times_the_product_was_shown = [];
 
-//   for (var m = 0; m < all_product_images.length; m++) {
-//     product_names.push(all_product_images[m].product_name);
-//     number_of_times_product_was_clicked.push(all_product_images[m].clicks);
-//     number_of_times_the_product_was_shown.push(all_product_images[m].times_shown_on_page);
-//   }
+  for (var m = 0; m < all_product_images.length; m++) {
+    product_names.push(all_product_images[m].product_name);
+    number_of_times_product_was_clicked.push(all_product_images[m].clicks);
+    number_of_times_the_product_was_shown.push(all_product_images[m].times_shown_on_page);
+  }
+  var percentages = calculate_array_based_percentages(number_of_times_product_was_clicked, number_of_times_the_product_was_shown);
 
-//   var percentages = calculate_array_based_percentages(number_of_times_product_was_clicked, number_of_times_the_product_was_shown);
+  var purple_gradient = total_clicks_chart_element.createLinearGradient(0, 0, 0, 600);
+  purple_gradient.addColorStop(0.0, 'whitesmoke');
+  purple_gradient.addColorStop(1.0, '#7b27c4');
 
-//   var green_gradient = total_clicks_chart_element.createLinearGradient(0, 0, 0, 600);
-//   green_gradient.addColorStop(0.0, 'whitesmoke');
-//   green_gradient.addColorStop(0.7, 'lightgreen');
-//   green_gradient.addColorStop(1.0, 'darkgreen');
+  var myChart = new Chart(picked_when_on_page_chart_element, {
+    type: 'line',
+    data: {
+      labels: product_names,
+      datasets: [{
+        label: 'Percentage: ',
+        data: percentages,
+        fill: true,
+        backgroundColor: purple_gradient,
+        borderColor: '#531a84',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '% of Times Picked When Item was Shown on Page',
+        fontSize: 20
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
 
-//   var blue_gradient = total_clicks_chart_element.createLinearGradient(0, 0, 0, 600);
-//   blue_gradient.addColorStop(0.0, 'whitesmoke');
-//   blue_gradient.addColorStop(0.5, 'lightblue');
-//   blue_gradient.addColorStop(1.0, 'darkblue');
-
-//   // var all_as_gradient = [];
-//   // for (var n = 0; n < all_product_images.length; n++) {
-//   //   all_as_gradient[n].push(green_gradient);
-//   // }
-
-//   var clicks_chart = new Chart(picked_when_on_page_chart_element, {
-//     type: 'polarArea',
-//     data: {
-//       labels: product_names,
-//       datasets: [{
-//         label: '# of times shown',
-//         data: number_of_times_the_product_was_shown,
-//         backgroundColor: [
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//           green_gradient,
-//         ],
-//         borderColor: 'darkgreen',
-//         borderWidth: 1
-//       },
-//       {
-//         label: '# of votes',
-//         data: number_of_times_product_was_clicked,
-//         backgroundColor: [
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//           blue_gradient,
-//         ],
-//         borderColor: 'darkblue',
-//         borderWidth: 1
-//       }
-//       ]
-//     },
-//     options: {
-//       title: {
-//         display: true,
-//         text: 'Times Voted on a Product vs. Times Product was Shown on Page',
-//         fontSize: 20
-//       },
-//       layout: {
-//         padding: 20
-//       },
-//       scales: {
-//         yAxes: [{
-//           ticks: {
-//             beginAtZero: true
-//           }
-//         }]
-//       }
-//     }
-//   });
-// }
 //-----------------------------
 // Event Functions
 //-----------------------------
