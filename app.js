@@ -67,7 +67,6 @@ function new_image_set() {
     new_images_to_render_to_page.push(new_image);
 
   }
-  console.log(new_images_to_render_to_page);
   return new_images_to_render_to_page;
 
 }
@@ -104,6 +103,7 @@ function calculate_total_clicks_based_percentages(user_clicks_array) {
   for (var p in user_clicks_array) {
     user_clicks_array[p] = Math.round((user_clicks_array[p] / total_clicks) * 100);
   }
+  console.log(user_clicks_array);
   return user_clicks_array;
 }
 
@@ -111,7 +111,7 @@ function calculate_array_based_percentages(user_clicks_array, divisor_array) {
   for (var q in user_clicks_array) {
     user_clicks_array[q] = Math.round((user_clicks_array[q] / divisor_array[q]) * 100);
   }
-
+  console.log(user_clicks_array);
   return user_clicks_array;
 }
 
@@ -153,7 +153,6 @@ function image_was_clicked(event) {
         clicked.clicks++;
         total_clicks++;
         render_new_images();
-        console.log(clicked);
       }
     }
   } else {
@@ -189,12 +188,8 @@ new Product_image('./img/usb.gif', 'Tentacle USB Drive');
 new Product_image('./img/water-can.jpg', 'Watering Can');
 new Product_image('./img/wine-glass.jpg', 'Wine Glass');
 
-// console.log(all_product_images);
 //starts page with three random images
 render_new_images();
-
-
-// console.log(number_of_products_on_the_page);
 
 
 //clicking
@@ -290,7 +285,7 @@ function render_user_clicks_percentages_chart() {
   number_of_times_product_was_clicked = calculate_total_clicks_based_percentages(number_of_times_product_was_clicked);
 
   var user_clicks_percentages = new Chart(user_click_percentages_chart_element, {
-    type: 'pie',
+    type: 'bar',
     data: {
       labels: product_names,
       datasets: [{
@@ -350,7 +345,7 @@ function render_when_on_page_percentages_chart() {
   number_of_times_product_was_clicked = calculate_array_based_percentages(number_of_times_product_was_clicked, times_shown_on_page);
 
   var user_clicks_percentages = new Chart(picked_when_on_page_chart_element, {
-    type: 'pie',
+    type: 'bar',
     data: {
       labels: product_names,
       datasets: [{
