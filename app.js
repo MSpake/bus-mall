@@ -243,7 +243,7 @@ function render_percentages_chart() {
     data: {
       labels: product_names,
       datasets: [{
-        label: 'Percentage: ',
+        label: 'Percentage',
         data: percentages,
         fill: true,
         backgroundColor: purple_gradient,
@@ -260,6 +260,7 @@ function render_percentages_chart() {
       scales: {
         yAxes: [{
           ticks: {
+            max: 100,
             beginAtZero: true
           }
         }]
