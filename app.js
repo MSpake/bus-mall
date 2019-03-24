@@ -113,6 +113,36 @@ function render_totals() {
   render_percentages_chart();
 }
 
+
+//-----------------------------
+// Event Functions
+//-----------------------------
+
+function image_was_clicked(event) {
+
+  //limit number of clicks
+  if (total_current_clicks < allowed_number_of_clicks) {
+    var clicked;
+    for (var k = 0; k < number_of_products_on_the_page.length; k++) {
+      var possible_targeted_product = products_on_page[k];
+      if (all_product_images[possible_targeted_product].element_name === event.target.name) {
+        clicked = all_product_images[possible_targeted_product];
+        clicked.clicks++;
+        total_current_clicks++;
+        render_new_images();
+      }
+    }
+  } else {
+    product_choices.removeEventListener('click', image_was_clicked);
+    render_totals();
+    total_clicks += total_current_clicks;
+    localStorage.setItem('total_clicks', total_clicks);
+    var stringified_all_product_images = JSON.stringify(all_product_images);
+    localStorage.setItem('all_product_images', stringified_all_product_images);
+  }
+}
+
+
 //-----------------------------
 // Chart Functions
 //-----------------------------
@@ -269,33 +299,6 @@ function render_percentages_chart() {
   });
 }
 
-//-----------------------------
-// Event Functions
-//-----------------------------
-
-function image_was_clicked(event) {
-
-  //limit number of clicks
-  if (total_current_clicks < allowed_number_of_clicks) {
-    var clicked;
-    for (var k = 0; k < number_of_products_on_the_page.length; k++) {
-      var possible_targeted_product = products_on_page[k];
-      if (all_product_images[possible_targeted_product].element_name === event.target.name) {
-        clicked = all_product_images[possible_targeted_product];
-        clicked.clicks++;
-        total_current_clicks++;
-        render_new_images();
-      }
-    }
-  } else {
-    product_choices.removeEventListener('click', image_was_clicked);
-    render_totals();
-    total_clicks += total_current_clicks;
-    localStorage.setItem('total_clicks', total_clicks);
-    var stringified_all_product_images = JSON.stringify(all_product_images);
-    localStorage.setItem('all_product_images', stringified_all_product_images);
-  }
-}
 
 //-----------------------------
 // Runtime
